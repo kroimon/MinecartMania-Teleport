@@ -1,0 +1,4 @@
+name: Minecart Mania Teleport
+main: net.sradonia.bukkit.minecartmania.teleport.MinecartManiaTeleport
+version: 1.0
+author: kroimon
