@@ -20,8 +20,10 @@ public class MinecartActionListener extends MinecartManiaListener {
 
 	@Override
 	public void onMinecartActionEvent(MinecartActionEvent event) {
-		if (!event.isActionTaken()) {
-			Block blockAhead = event.getMinecart().getBlockTypeAhead();
+		if (event.isActionTaken())
+			return;
+		Block blockAhead = event.getMinecart().getBlockTypeAhead();
+		if (blockAhead != null) {
 			Material type = blockAhead.getType();
 			if (type.equals(Material.SIGN_POST) || type.equals(Material.WALL_SIGN)) {
 				// Minecart is going to crash into a sign...
