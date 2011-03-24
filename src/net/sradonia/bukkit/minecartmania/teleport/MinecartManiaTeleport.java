@@ -45,9 +45,10 @@ public class MinecartManiaTeleport extends JavaPlugin {
 
 		// Register listeners
 		final SignBlockListener blockListener = new SignBlockListener(teleporters);
-		pluginManager.registerEvent(Event.Type.BLOCK_RIGHTCLICKED, blockListener, Priority.Normal, this);
 		pluginManager.registerEvent(Event.Type.BLOCK_BREAK, blockListener, Priority.Monitor, this);
 		pluginManager.registerEvent(Event.Type.BLOCK_PHYSICS, blockListener, Priority.High, this);
+		final SignPlayerListener playerListener = new SignPlayerListener(teleporters);
+		pluginManager.registerEvent(Event.Type.PLAYER_INTERACT, playerListener, Priority.Normal, this);
 
 		final MinecartActionListener actionListener = new MinecartActionListener(teleporters);
 		pluginManager.registerEvent(Event.Type.CUSTOM_EVENT, actionListener, Priority.Low, this);
