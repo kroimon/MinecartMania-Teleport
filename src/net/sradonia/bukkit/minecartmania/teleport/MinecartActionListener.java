@@ -39,30 +39,31 @@ public class MinecartActionListener extends MinecartManiaListener {
 					Location targetLocation = teleporter.getOther(signLocation);
 					if (targetLocation == null) {
 						// but we're missing the second waypoint...
-						if (minecart.hasPlayerPassenger()) {
+						if (minecart.hasPlayerPassenger())
 							minecart.getPlayerPassenger().sendMessage("You just crashed into an unconnected teleporter sign ;-)");
-						}
 					} else {
 						// search for minecart tracks around the target waypoint
 						Location trackLocation = findTrackAround(targetLocation);
 						if (trackLocation == null) {
-							if (minecart.hasPlayerPassenger()) {
+							if (minecart.hasPlayerPassenger())
 								minecart.getPlayerPassenger().sendMessage("Couldn't find tracks at target sign.");
-							}
 						} else {
 							// teleport minecart...
-							minecart.minecart.teleportTo(trackLocation);
-
-							// ...and set it's moving direction
-							double speed = minecart.minecart.getVelocity().length();
-							if (targetLocation.getX() > trackLocation.getX())
-								minecart.minecart.setVelocity(new Vector(-speed, 0, 0));
-							else if (targetLocation.getX() < trackLocation.getX())
-								minecart.minecart.setVelocity(new Vector(speed, 0, 0));
-							else if (targetLocation.getZ() > trackLocation.getZ())
-								minecart.minecart.setVelocity(new Vector(0, 0, -speed));
-							else if (targetLocation.getZ() < trackLocation.getZ())
-								minecart.minecart.setVelocity(new Vector(0, 0, speed));
+							if (minecart.minecart.teleport(trackLocation)) {
+								// ...and set it's moving direction
+								double speed = minecart.minecart.getVelocity().length();
+								if (targetLocation.getX() > trackLocation.getX())
+									minecart.minecart.setVelocity(new Vector(-speed, 0, 0));
+								else if (targetLocation.getX() < trackLocation.getX())
+									minecart.minecart.setVelocity(new Vector(speed, 0, 0));
+								else if (targetLocation.getZ() > trackLocation.getZ())
+									minecart.minecart.setVelocity(new Vector(0, 0, -speed));
+								else if (targetLocation.getZ() < trackLocation.getZ())
+									minecart.minecart.setVelocity(new Vector(0, 0, speed));
+							} else {
+								if (minecart.hasPlayerPassenger())
+									minecart.getPlayerPassenger().sendMessage("Couldn't teleport you for some unknown reason - something prevents it!");
+							}
 						}
 					}
 
