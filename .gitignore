@@ -1,8 +1,7 @@
-# Eclipse
+# Binaries
+/target
+
+# Eclipse stuff
+/.settings
 /.classpath
 /.project
-/.settings
-/MinecartManiaTeleport.jardesc
-
-# Binaries
-/bin

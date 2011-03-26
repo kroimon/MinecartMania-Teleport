@@ -1,4 +1,4 @@
-name: Minecart Mania Teleport
+name: ${project.name}
 main: net.sradonia.bukkit.minecartmania.teleport.MinecartManiaTeleport
-version: 1.0.2
+version: ${project.version}
 author: kroimon
