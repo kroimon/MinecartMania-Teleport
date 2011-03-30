@@ -4,6 +4,8 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Minecart;
 import org.bukkit.util.Vector;
 
 import com.afforess.minecartmaniacore.MinecartManiaMinecart;
@@ -11,9 +13,11 @@ import com.afforess.minecartmaniacore.event.MinecartActionEvent;
 import com.afforess.minecartmaniacore.event.MinecartManiaListener;
 
 public class MinecartActionListener extends MinecartManiaListener {
+	private final MinecartManiaTeleport plugin;
 	private final TeleporterList teleporters;
 
-	public MinecartActionListener(TeleporterList teleporters) {
+	public MinecartActionListener(MinecartManiaTeleport plugin, TeleporterList teleporters) {
+		this.plugin = plugin;
 		this.teleporters = teleporters;
 	}
 
@@ -37,37 +41,63 @@ public class MinecartActionListener extends MinecartManiaListener {
 					MinecartManiaMinecart minecart = event.getMinecart();
 					Location targetLocation = teleporter.getOther(signLocation);
 					if (targetLocation == null) {
-						// but we're missing the second waypoint...
+						// a) but we're missing the second waypoint!
 						if (minecart.hasPlayerPassenger())
 							minecart.getPlayerPassenger().sendMessage("You just crashed into an unconnected teleporter sign ;-)");
 					} else {
-						// search for minecart tracks around the target waypoint
-						Location trackLocation = findTrackAround(targetLocation);
-						if (trackLocation == null) {
-							if (minecart.hasPlayerPassenger())
-								minecart.getPlayerPassenger().sendMessage("Couldn't find tracks at target sign.");
-						} else {
-							// teleport minecart...
-							if (minecart.minecart.teleport(trackLocation)) {
-								// ...and set it's moving direction
-								double speed = minecart.minecart.getVelocity().length();
-								if (targetLocation.getX() > trackLocation.getX())
-									minecart.minecart.setVelocity(new Vector(-speed, 0, 0));
-								else if (targetLocation.getX() < trackLocation.getX())
-									minecart.minecart.setVelocity(new Vector(speed, 0, 0));
-								else if (targetLocation.getZ() > trackLocation.getZ())
-									minecart.minecart.setVelocity(new Vector(0, 0, -speed));
-								else if (targetLocation.getZ() < trackLocation.getZ())
-									minecart.minecart.setVelocity(new Vector(0, 0, speed));
-							} else {
-								if (minecart.hasPlayerPassenger())
-									minecart.getPlayerPassenger().sendMessage("Couldn't teleport you for some unknown reason - something prevents it!");
-							}
-						}
+						// b) and we have a lift-off!
+						teleportMinecart(minecart, targetLocation);
 					}
-
 				}
 			}
+		}
+	}
+
+	private void teleportMinecart(MinecartManiaMinecart minecart, Location targetLocation) {
+		// search for minecart tracks around the target waypoint
+		Location trackLocation = findTrackAround(targetLocation);
+		if (trackLocation == null) {
+			if (minecart.hasPlayerPassenger())
+				minecart.getPlayerPassenger().sendMessage("Couldn't find tracks at target sign.");
+			return;
+		}
+
+		final Minecart cart = minecart.minecart;
+
+		// check it's speed and calculate new velocity
+		double speed = cart.getVelocity().length();
+		final Vector newVelocity;
+		if (targetLocation.getX() > trackLocation.getX())
+			newVelocity = new Vector(-speed, 0, 0);
+		else if (targetLocation.getX() < trackLocation.getX())
+			newVelocity = new Vector(speed, 0, 0);
+		else if (targetLocation.getZ() > trackLocation.getZ())
+			newVelocity = new Vector(0, 0, -speed);
+		else if (targetLocation.getZ() < trackLocation.getZ())
+			newVelocity = new Vector(0, 0, speed);
+		else // something went wrong?
+			newVelocity = cart.getVelocity();
+
+		// teleport minecart...
+		final Entity passenger = cart.getPassenger();
+		if (passenger == null) {
+			// empty minecart, just teleport it the simple way
+			if (cart.teleport(trackLocation))
+				cart.setVelocity(newVelocity);
+		} else {
+			// we have a passenger, do some hacky stuff - idea thanks to 'Wormhole X-Treme'
+			cart.eject();
+			cart.remove();
+
+			final Minecart newCart = trackLocation.getWorld().spawnMinecart(trackLocation);
+			passenger.teleport(targetLocation);
+			newCart.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+				@Override
+				public void run() {
+					newCart.setPassenger(passenger);
+					newCart.setVelocity(newVelocity);
+				}
+			}, 5);
 		}
 	}
 
@@ -90,4 +120,5 @@ public class MinecartActionListener extends MinecartManiaListener {
 
 		return null;
 	}
+
 }

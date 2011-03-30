@@ -50,7 +50,7 @@ public class MinecartManiaTeleport extends JavaPlugin {
 		final SignPlayerListener playerListener = new SignPlayerListener(teleporters);
 		pluginManager.registerEvent(Event.Type.PLAYER_INTERACT, playerListener, Priority.Normal, this);
 
-		final MinecartActionListener actionListener = new MinecartActionListener(teleporters);
+		final MinecartActionListener actionListener = new MinecartActionListener(this, teleporters);
 		pluginManager.registerEvent(Event.Type.CUSTOM_EVENT, actionListener, Priority.Low, this);
 
 		log.info("[" + pdf.getName() + "] version " + pdf.getVersion() + " enabled!" );
