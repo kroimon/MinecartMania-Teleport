@@ -24,9 +24,9 @@ public class MinecartManiaTeleport extends JavaPlugin {
 		PluginManager pluginManager = getServer().getPluginManager();
 
 		// Check for Minecart Mania Core plugin
-		Plugin minecartMania = pluginManager.getPlugin("Minecart Mania Core");
+		Plugin minecartMania = pluginManager.getPlugin("MinecartManiaCore");
 		if (minecartMania == null) {
-			log.severe(pdf.getName() + " requires Minecart Mania Core to function! Disabled.");
+			log.severe(pdf.getName() + " requires MinecartManiaCore to function! Disabled.");
 			return;
 		}
 		pluginManager.enablePlugin(minecartMania);

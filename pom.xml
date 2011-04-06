@@ -4,8 +4,8 @@
 
 	<groupId>net.sradonia.bukkit</groupId>
 	<artifactId>MinecartManiaTeleport</artifactId>
-	<version>1.1.0</version>
-	<name>Minecart Mania Teleport</name>
+	<version>1.1.1</version>
+	<name>MinecartManiaTeleport</name>
 
 	<scm>
 		<connection>scm:git:git://github.com/kroimon/MinecartMania-Teleport.git</connection>
@@ -28,8 +28,8 @@
 		</dependency>
 		<dependency>
 			<groupId>com.afforess</groupId>
-			<artifactId>MinecartMania</artifactId>
-			<version>1.05</version>
+			<artifactId>MinecartManiaCore</artifactId>
+			<version>1.08b</version>
 		</dependency>
 	</dependencies>
 
