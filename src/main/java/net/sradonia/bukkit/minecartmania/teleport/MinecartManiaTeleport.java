@@ -23,13 +23,13 @@ public class MinecartManiaTeleport extends JavaPlugin {
 		PluginDescriptionFile pdf = getDescription();
 		PluginManager pluginManager = getServer().getPluginManager();
 
-		// Check for Minecart Mania Core plugin
+		// Get Minecart Mania Core plugin - should already be laoded by Bukkit
 		Plugin minecartMania = pluginManager.getPlugin("MinecartManiaCore");
 		if (minecartMania == null) {
 			log.severe(pdf.getName() + " requires MinecartManiaCore to function! Disabled.");
+			setEnabled(false);
 			return;
 		}
-		pluginManager.enablePlugin(minecartMania);
 
 		// Load teleporters
 		File teleporterFile = new File(MinecartManiaCore.dataDirectory, TELEPORTERS_FILE);

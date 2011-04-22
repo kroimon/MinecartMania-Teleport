@@ -2,3 +2,4 @@ name: ${project.name}
 main: net.sradonia.bukkit.minecartmania.teleport.MinecartManiaTeleport
 version: ${project.version}
 author: kroimon
+depend: [MinecartManiaCore]
