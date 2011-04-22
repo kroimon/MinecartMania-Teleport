@@ -101,9 +101,11 @@ public class MinecartActionListener extends MinecartManiaListener {
 		} else {
 			// we have a passenger, do some hacky stuff - idea thanks to 'Wormhole X-Treme'
 			cart.eject();
-			cart.remove();
 
 			final Minecart newCart = trackLocation.getWorld().spawnMinecart(trackLocation);
+			minecart.copy(newCart);
+			minecart.kill(false);
+
 			passenger.teleport(targetLocation);
 			newCart.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 				@Override
