@@ -12,9 +12,9 @@ public class SignBlockListener extends BlockListener {
 	private final MinecartManiaTeleport plugin;
 	private final TeleporterList teleporters;
 
-	public SignBlockListener(MinecartManiaTeleport plugin, TeleporterList teleporters) {
+	public SignBlockListener(MinecartManiaTeleport plugin) {
 		this.plugin = plugin;
-		this.teleporters = teleporters;
+		this.teleporters = plugin.getTeleporters();
 	}
 
 	private boolean isSignEvent(BlockEvent event) {
@@ -58,5 +58,4 @@ public class SignBlockListener extends BlockListener {
 			}
         }
 	}
-
 }

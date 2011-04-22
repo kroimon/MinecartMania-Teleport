@@ -15,11 +15,9 @@ import com.afforess.minecartmaniacore.event.MinecartManiaListener;
 
 public class MinecartActionListener extends MinecartManiaListener {
 	private final MinecartManiaTeleport plugin;
-	private final TeleporterList teleporters;
 
-	public MinecartActionListener(MinecartManiaTeleport plugin, TeleporterList teleporters) {
+	public MinecartActionListener(MinecartManiaTeleport plugin) {
 		this.plugin = plugin;
-		this.teleporters = teleporters;
 	}
 
 	@Override
@@ -33,12 +31,13 @@ public class MinecartActionListener extends MinecartManiaListener {
 				// Minecart is going to crash into a sign...
 
 				Location signLocation = blockAhead.getLocation();
-				Teleporter teleporter = teleporters.search(signLocation);
+				Teleporter teleporter = plugin.getTeleporters().search(signLocation);
 				if (teleporter != null) {
 					// ... which is a teleporter!
 
 					MinecartManiaMinecart minecart = event.getMinecart();
 
+					// If there is a passenger: check his permission!
 					if (minecart.hasPlayerPassenger()) {
 						Player player = minecart.getPlayerPassenger();
 						if (!plugin.hasPermission(player, "minecartmania.teleport.use")) {
@@ -47,6 +46,7 @@ public class MinecartActionListener extends MinecartManiaListener {
 						}
 					}
 
+					// We can now try to teleport the minecart
 					WorldNameLocation targetLocation = teleporter.getOther(signLocation);
 					if (targetLocation == null) {
 						// a) but we're missing the second waypoint!
@@ -134,5 +134,4 @@ public class MinecartActionListener extends MinecartManiaListener {
 
 		return null;
 	}
-
 }

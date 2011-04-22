@@ -12,9 +12,9 @@ public class SignPlayerListener extends PlayerListener {
 	private final MinecartManiaTeleport plugin;
 	private final TeleporterList teleporters;
 
-	public SignPlayerListener(MinecartManiaTeleport plugin, TeleporterList teleporters) {
+	public SignPlayerListener(MinecartManiaTeleport plugin) {
 		this.plugin = plugin;
-		this.teleporters = teleporters;
+		this.teleporters = plugin.getTeleporters();
 	}
 
 	@Override

@@ -71,20 +71,24 @@ public class MinecartManiaTeleport extends JavaPlugin {
 		pluginManager.registerEvent(Event.Type.PLUGIN_ENABLE, serverListener, Priority.Monitor, this);
 		pluginManager.registerEvent(Event.Type.PLUGIN_DISABLE, serverListener, Priority.Monitor, this);
 
-		final SignBlockListener blockListener = new SignBlockListener(this, teleporters);
+		final SignBlockListener blockListener = new SignBlockListener(this);
 		pluginManager.registerEvent(Event.Type.BLOCK_BREAK, blockListener, Priority.Monitor, this);
 		pluginManager.registerEvent(Event.Type.BLOCK_PHYSICS, blockListener, Priority.High, this);
-		final SignPlayerListener playerListener = new SignPlayerListener(this, teleporters);
+		final SignPlayerListener playerListener = new SignPlayerListener(this);
 		pluginManager.registerEvent(Event.Type.PLAYER_INTERACT, playerListener, Priority.Normal, this);
 
-		final MinecartActionListener actionListener = new MinecartActionListener(this, teleporters);
+		final MinecartActionListener actionListener = new MinecartActionListener(this);
 		pluginManager.registerEvent(Event.Type.CUSTOM_EVENT, actionListener, Priority.Low, this);
 
-		log.info("[" + pdf.getName() + "] version " + pdf.getVersion() + " enabled!" );
+		log.info("[" + pdf.getName() + "] version " + pdf.getVersion() + " enabled!");
 	}
 
 	public void onDisable() {
 		// nothing to do
+	}
+
+	public TeleporterList getTeleporters() {
+		return teleporters;
 	}
 
 	public boolean hasPermission(Player player, String permission) {

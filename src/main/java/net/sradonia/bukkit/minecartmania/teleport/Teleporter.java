@@ -70,5 +70,4 @@ public class Teleporter {
 	public boolean contains(Location location) {
 		return location.equals(first) || location.equals(second);
 	}
-
 }
