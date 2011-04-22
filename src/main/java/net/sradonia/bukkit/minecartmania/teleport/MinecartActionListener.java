@@ -6,6 +6,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Minecart;
+import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import com.afforess.minecartmaniacore.MinecartManiaMinecart;
@@ -36,9 +37,16 @@ public class MinecartActionListener extends MinecartManiaListener {
 				if (teleporter != null) {
 					// ... which is a teleporter!
 
-					event.setActionTaken(true);
-
 					MinecartManiaMinecart minecart = event.getMinecart();
+
+					if (minecart.hasPlayerPassenger()) {
+						Player player = minecart.getPlayerPassenger();
+						if (!plugin.hasPermission(player, "minecartmania.teleport.use")) {
+							player.sendMessage("You are not allowed to use a teleporter!");
+							return;
+						}
+					}
+
 					WorldNameLocation targetLocation = teleporter.getOther(signLocation);
 					if (targetLocation == null) {
 						// a) but we're missing the second waypoint!
@@ -52,6 +60,7 @@ public class MinecartActionListener extends MinecartManiaListener {
 					} else {
 						// c) and we have a lift-off!
 						teleportMinecart(minecart, targetLocation);
+						event.setActionTaken(true);
 					}
 				}
 			}

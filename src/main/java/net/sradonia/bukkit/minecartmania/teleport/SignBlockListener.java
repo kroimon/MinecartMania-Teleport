@@ -9,9 +9,11 @@ import org.bukkit.event.block.BlockListener;
 import org.bukkit.event.block.BlockPhysicsEvent;
 
 public class SignBlockListener extends BlockListener {
+	private final MinecartManiaTeleport plugin;
 	private final TeleporterList teleporters;
 
-	public SignBlockListener(TeleporterList teleporters) {
+	public SignBlockListener(MinecartManiaTeleport plugin, TeleporterList teleporters) {
+		this.plugin = plugin;
 		this.teleporters = teleporters;
 	}
 
@@ -22,21 +24,25 @@ public class SignBlockListener extends BlockListener {
 
 	@Override
 	public void onBlockBreak(BlockBreakEvent event) {
-		if (isSignEvent(event)) {
+		if (!event.isCancelled() && isSignEvent(event)) {
 			Location location = event.getBlock().getLocation();
 			Player player = event.getPlayer();
 
 			Teleporter teleporter = teleporters.search(location);
 			if (teleporter != null) {
-				// destroyed a teleporter
+				// destroying a teleporter
 
-				teleporter.remove(location);
-				if (!teleporter.isEmpty()) {
-					teleporters.trySave();
-					player.sendMessage("Destroyed one sign of teleporter '" + teleporter.getName() + "'! The other is still around!");
+				if (!plugin.hasPermission(player, "minecartmania.teleport.break")) {
+					player.sendMessage("You are not allowed to break a teleporter sign!");
 				} else {
-					teleporters.remove(teleporter);
-					player.sendMessage("Destroyed last sign of teleporter '" + teleporter.getName() + "'!");
+					teleporter.remove(location);
+					if (!teleporter.isEmpty()) {
+						teleporters.trySave();
+						player.sendMessage("Destroyed one sign of teleporter '" + teleporter.getName() + "'! The other is still around!");
+					} else {
+						teleporters.remove(teleporter);
+						player.sendMessage("Destroyed last sign of teleporter '" + teleporter.getName() + "'!");
+					}
 				}
 			}
 		}
@@ -44,7 +50,7 @@ public class SignBlockListener extends BlockListener {
 
 	@Override
 	public void onBlockPhysics(BlockPhysicsEvent event) {
-		if (isSignEvent(event)) {
+		if (!event.isCancelled() && isSignEvent(event)) {
 			// changed block around the sign
 			if (teleporters.search(event.getBlock().getLocation()) != null) {
 				// teleporter sign - prevent breakage!

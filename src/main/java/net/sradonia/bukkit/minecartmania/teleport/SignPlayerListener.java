@@ -9,15 +9,17 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerListener;
 
 public class SignPlayerListener extends PlayerListener {
+	private final MinecartManiaTeleport plugin;
 	private final TeleporterList teleporters;
 
-	public SignPlayerListener(TeleporterList teleporters) {
+	public SignPlayerListener(MinecartManiaTeleport plugin, TeleporterList teleporters) {
+		this.plugin = plugin;
 		this.teleporters = teleporters;
 	}
 
 	@Override
 	public void onPlayerInteract(PlayerInteractEvent event) {
-		if (!event.getAction().equals(Action.RIGHT_CLICK_BLOCK) || !event.hasBlock())
+		if (event.isCancelled() || !event.getAction().equals(Action.RIGHT_CLICK_BLOCK) || !event.hasBlock())
 			return;
 
 		Material blockType = event.getClickedBlock().getType();
@@ -51,11 +53,13 @@ public class SignPlayerListener extends PlayerListener {
 
 				if (magic != null && magic.contains("cart") && magic.contains("teleport")) {
 					// found cart teleporter!
-					if (name == null) {
+					if (!plugin.hasPermission(player, "minecartmania.teleport.create")) {
+						player.sendMessage("You are not allowed to create a teleporter!");
+					} else if (name == null) {
 						player.sendMessage("Your minecart teleporter needs a name!");
 					} else {
 						Teleporter teleporter = teleporters.get(name);
-						
+
 						if (teleporter == null) {
 							// first sign
 							teleporters.put(name, new Teleporter(name, new WorldNameLocation(location)));
@@ -81,5 +85,4 @@ public class SignPlayerListener extends PlayerListener {
 			}
 		}
 	}
-
 }

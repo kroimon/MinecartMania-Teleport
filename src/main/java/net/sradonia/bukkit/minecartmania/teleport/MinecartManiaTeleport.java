@@ -4,14 +4,20 @@ import java.io.File;
 import java.io.IOException;
 import java.util.logging.Logger;
 
+import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.Event.Priority;
+import org.bukkit.event.server.PluginDisableEvent;
+import org.bukkit.event.server.PluginEnableEvent;
+import org.bukkit.event.server.ServerListener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.afforess.minecartmaniacore.MinecartManiaCore;
+import com.nijiko.permissions.PermissionHandler;
+import com.nijikokun.bukkit.Permissions.Permissions;
 
 public class MinecartManiaTeleport extends JavaPlugin {
 	private static final Logger log = Logger.getLogger("Minecraft");
@@ -19,8 +25,10 @@ public class MinecartManiaTeleport extends JavaPlugin {
 	private final static String TELEPORTERS_FILE = "Teleporters.dat";
 	private TeleporterList teleporters;
 
+	private PermissionHandler permissionHandler = null;
+
 	public void onEnable() {
-		PluginDescriptionFile pdf = getDescription();
+		final PluginDescriptionFile pdf = getDescription();
 		PluginManager pluginManager = getServer().getPluginManager();
 
 		// Get Minecart Mania Core plugin - should already be laoded by Bukkit
@@ -44,10 +52,29 @@ public class MinecartManiaTeleport extends JavaPlugin {
 			}
 
 		// Register listeners
-		final SignBlockListener blockListener = new SignBlockListener(teleporters);
+		final ServerListener serverListener = new ServerListener() {
+			@Override
+			public void onPluginEnable(PluginEnableEvent event) {
+				if (event.getPlugin() instanceof Permissions) {
+					permissionHandler = ((Permissions) event.getPlugin()).getHandler();
+					log.info("[" + pdf.getName() + "] Permissions support enabled! Remember to set the appropriate permissions!");
+				}
+			}
+			@Override
+			public void onPluginDisable(PluginDisableEvent event) {
+				if (event.getPlugin() instanceof Permissions) {
+					permissionHandler = null;
+					log.info("[" + pdf.getName() + "] Permissions support disabled!");
+				}
+			}
+		};
+		pluginManager.registerEvent(Event.Type.PLUGIN_ENABLE, serverListener, Priority.Monitor, this);
+		pluginManager.registerEvent(Event.Type.PLUGIN_DISABLE, serverListener, Priority.Monitor, this);
+
+		final SignBlockListener blockListener = new SignBlockListener(this, teleporters);
 		pluginManager.registerEvent(Event.Type.BLOCK_BREAK, blockListener, Priority.Monitor, this);
 		pluginManager.registerEvent(Event.Type.BLOCK_PHYSICS, blockListener, Priority.High, this);
-		final SignPlayerListener playerListener = new SignPlayerListener(teleporters);
+		final SignPlayerListener playerListener = new SignPlayerListener(this, teleporters);
 		pluginManager.registerEvent(Event.Type.PLAYER_INTERACT, playerListener, Priority.Normal, this);
 
 		final MinecartActionListener actionListener = new MinecartActionListener(this, teleporters);
@@ -60,4 +87,12 @@ public class MinecartManiaTeleport extends JavaPlugin {
 		// nothing to do
 	}
 
+	public boolean hasPermission(Player player, String permission) {
+		if (permissionHandler != null) {
+			return permissionHandler.has(player, permission);
+		} else {
+			// legacy: without Permissions everyone is allowed to do everything
+			return true;
+		}
+	}
 }
