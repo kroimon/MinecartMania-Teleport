@@ -108,7 +108,6 @@ public class MinecartActionListener extends MinecartManiaListener {
 
 			passenger.teleport(targetLocation);
 			newCart.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-				@Override
 				public void run() {
 					newCart.setPassenger(passenger);
 					newCart.setVelocity(newVelocity);
