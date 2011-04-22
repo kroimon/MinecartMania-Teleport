@@ -39,13 +39,18 @@ public class MinecartActionListener extends MinecartManiaListener {
 					event.setActionTaken(true);
 
 					MinecartManiaMinecart minecart = event.getMinecart();
-					Location targetLocation = teleporter.getOther(signLocation);
+					WorldNameLocation targetLocation = teleporter.getOther(signLocation);
 					if (targetLocation == null) {
 						// a) but we're missing the second waypoint!
 						if (minecart.hasPlayerPassenger())
 							minecart.getPlayerPassenger().sendMessage("You just crashed into an unconnected teleporter sign ;-)");
+					} else if (targetLocation.getWorld() == null) {
+						// b) but the target world isn't loaded!
+						if (minecart.hasPlayerPassenger())
+							minecart.getPlayerPassenger().sendMessage(
+									"The target world '" + targetLocation.getWorldName() + "' is currently not loaded.");
 					} else {
-						// b) and we have a lift-off!
+						// c) and we have a lift-off!
 						teleportMinecart(minecart, targetLocation);
 					}
 				}

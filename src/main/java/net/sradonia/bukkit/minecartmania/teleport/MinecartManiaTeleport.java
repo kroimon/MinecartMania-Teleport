@@ -33,7 +33,7 @@ public class MinecartManiaTeleport extends JavaPlugin {
 
 		// Load teleporters
 		File teleporterFile = new File(MinecartManiaCore.dataDirectory, TELEPORTERS_FILE);
-		teleporters = new TeleporterList(getServer(), teleporterFile);
+		teleporters = new TeleporterList(teleporterFile);
 
 		if (teleporterFile.exists())
 			try {

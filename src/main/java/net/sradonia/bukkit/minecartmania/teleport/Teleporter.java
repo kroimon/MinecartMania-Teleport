@@ -5,15 +5,15 @@ import org.bukkit.Location;
 public class Teleporter {
 
 	private String name;
-	private Location first;
-	private Location second;
+	private WorldNameLocation first;
+	private WorldNameLocation second;
 
-	public Teleporter(String name, Location first) {
+	public Teleporter(String name, WorldNameLocation first) {
 		this.name = name;
 		this.first = first;
 	}
 
-	public Teleporter(String name, Location first, Location second) {
+	public Teleporter(String name, WorldNameLocation first, WorldNameLocation second) {
 		this(name, first);
 		this.second = second;
 	}
@@ -22,15 +22,15 @@ public class Teleporter {
 		return name;
 	}
 
-	public Location getFirst() {
+	public WorldNameLocation getFirst() {
 		return first;
 	}
 
-	public Location getSecond() {
+	public WorldNameLocation getSecond() {
 		return second;
 	}
 
-	public Location getOther(Location location) {
+	public WorldNameLocation getOther(Location location) {
 		if (location.equals(first))
 			return second;
 		else if (location.equals(second))
@@ -39,7 +39,7 @@ public class Teleporter {
 			throw new IllegalArgumentException("This location is not part of this teleporter!");
 	}
 
-	public void add(Location location) {
+	public void add(WorldNameLocation location) {
 		if (first == null)
 			first = location;
 		else if (second == null)

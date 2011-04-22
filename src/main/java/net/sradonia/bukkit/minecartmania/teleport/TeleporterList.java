@@ -11,18 +11,14 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
 import org.bukkit.Location;
-import org.bukkit.Server;
-import org.bukkit.World;
 
 public class TeleporterList {
 	private static final Logger log = Logger.getLogger("Minecraft");
 
-	private final Server server;
 	private final File teleporterFile;
 	private final Map<String, Teleporter> teleporters = new ConcurrentHashMap<String, Teleporter>();
 
-	public TeleporterList(Server server, File teleporterFile) {
-		this.server = server;
+	public TeleporterList(File teleporterFile) {
 		this.teleporterFile = teleporterFile;
 	}
 
@@ -56,31 +52,27 @@ public class TeleporterList {
 	}
 
 	private Teleporter loadTeleporter(String name, String[] values) {
-		Location firstLocation = null, secondLocation = null;
+		WorldNameLocation firstLocation = null, secondLocation = null;
 		// first sign location
 		if (values.length >= 4) {
-			World world = server.getWorld(values[0].trim());
-			if (world != null) {
-				try {
-					int x = Integer.valueOf(values[1].trim());
-					int y = Integer.valueOf(values[2].trim());
-					int z = Integer.valueOf(values[3].trim());
-					firstLocation = new Location(world, x, y, z);
-				} catch (NumberFormatException e) {
-				}
+			try {
+				String worldName = values[0].trim();
+				int x = Integer.valueOf(values[1].trim());
+				int y = Integer.valueOf(values[2].trim());
+				int z = Integer.valueOf(values[3].trim());
+				firstLocation = new WorldNameLocation(worldName, x, y, z);
+			} catch (NumberFormatException e) {
 			}
 		}
 		// second sign location
 		if (values.length >= 8) {
-			World world = server.getWorld(values[4].trim());
-			if (world != null) {
-				try {
-					int x = Integer.valueOf(values[5].trim());
-					int y = Integer.valueOf(values[6].trim());
-					int z = Integer.valueOf(values[7].trim());
-					secondLocation = new Location(world, x, y, z);
-				} catch (NumberFormatException e) {
-				}
+			try {
+				String worldName = values[4].trim();
+				int x = Integer.valueOf(values[5].trim());
+				int y = Integer.valueOf(values[6].trim());
+				int z = Integer.valueOf(values[7].trim());
+				secondLocation = new WorldNameLocation(worldName, x, y, z);
+			} catch (NumberFormatException e) {
 			}
 		}
 		// build teleporter
@@ -94,7 +86,6 @@ public class TeleporterList {
 		try {
 			save();
 		} catch (IOException e) {
-
 			log.severe("Could not save teleporters to file: " + e.getMessage());
 		}
 	}
@@ -109,16 +100,16 @@ public class TeleporterList {
 			String name = teleporter.getName().replace("#", "\\#").replace("=", "\\=");
 			file.append(name).append('=');
 
-			Location location = teleporter.getFirst();
+			WorldNameLocation location = teleporter.getFirst();
 			if (location != null) {
-				file.append(location.getWorld().getName()).append(',');
+				file.append(location.getWorldName()).append(',');
 				file.append(String.valueOf(location.getBlockX())).append(',');
 				file.append(String.valueOf(location.getBlockY())).append(',');
 				file.append(String.valueOf(location.getBlockZ())).append(',');
 			}
 			location = teleporter.getSecond();
 			if (location != null) {
-				file.append(location.getWorld().getName()).append(',');
+				file.append(location.getWorldName()).append(',');
 				file.append(String.valueOf(location.getBlockX())).append(',');
 				file.append(String.valueOf(location.getBlockY())).append(',');
 				file.append(String.valueOf(location.getBlockZ()));

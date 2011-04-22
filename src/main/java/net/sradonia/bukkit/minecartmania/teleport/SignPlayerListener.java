@@ -58,14 +58,14 @@ public class SignPlayerListener extends PlayerListener {
 						
 						if (teleporter == null) {
 							// first sign
-							teleporters.put(name, new Teleporter(name, location));
+							teleporters.put(name, new Teleporter(name, new WorldNameLocation(location)));
 							sign.setLine(magicLine, "[CartTeleport]");
 							sign.update();
 							player.sendMessage("Created first sign for teleporter '" + name + "'.");
 							player.sendMessage("Now go create a second sign!");
 						} else if (!teleporter.isComplete()) {
 							// second sign
-							teleporter.add(location);
+							teleporter.add(new WorldNameLocation(location));
 							teleporters.trySave();
 							sign.setLine(magicLine, "[CartTeleport]");
 							sign.update();
