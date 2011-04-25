@@ -39,6 +39,11 @@ public class MinecartManiaTeleport extends JavaPlugin {
 			return;
 		}
 
+		// Try to enable Permissions support
+		Plugin permissionsPlugin = pluginManager.getPlugin("Permissions");
+		if (permissionsPlugin != null && permissionsPlugin.isEnabled())
+			setPermissionsPlugin((Permissions) permissionsPlugin);
+
 		// Load teleporters
 		File teleporterFile = new File(MinecartManiaCore.dataDirectory, TELEPORTERS_FILE);
 		teleporters = new TeleporterList(teleporterFile);
@@ -55,17 +60,13 @@ public class MinecartManiaTeleport extends JavaPlugin {
 		final ServerListener serverListener = new ServerListener() {
 			@Override
 			public void onPluginEnable(PluginEnableEvent event) {
-				if (event.getPlugin() instanceof Permissions) {
-					permissionHandler = ((Permissions) event.getPlugin()).getHandler();
-					log.info("[" + pdf.getName() + "] Permissions support enabled! Remember to set the appropriate permissions!");
-				}
+				if (event.getPlugin() instanceof Permissions)
+					setPermissionsPlugin((Permissions) event.getPlugin());
 			}
 			@Override
 			public void onPluginDisable(PluginDisableEvent event) {
-				if (event.getPlugin() instanceof Permissions) {
-					permissionHandler = null;
-					log.info("[" + pdf.getName() + "] Permissions support disabled!");
-				}
+				if (event.getPlugin() instanceof Permissions)
+					setPermissionsPlugin(null);
 			}
 		};
 		pluginManager.registerEvent(Event.Type.PLUGIN_ENABLE, serverListener, Priority.Monitor, this);
@@ -89,6 +90,17 @@ public class MinecartManiaTeleport extends JavaPlugin {
 
 	public TeleporterList getTeleporters() {
 		return teleporters;
+	}
+
+	private void setPermissionsPlugin(Permissions plugin) {
+		final PluginDescriptionFile pdf = getDescription();
+		if (plugin != null) {
+			permissionHandler = plugin.getHandler();
+			log.info("[" + pdf.getName() + "] Permissions support enabled! Remember to set the appropriate permissions!");
+		} else {
+			permissionHandler = null;
+			log.info("[" + pdf.getName() + "] Permissions support disabled!");
+		}
 	}
 
 	public boolean hasPermission(Player player, String permission) {
