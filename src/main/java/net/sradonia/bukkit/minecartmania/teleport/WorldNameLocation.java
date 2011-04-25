@@ -55,4 +55,36 @@ public class WorldNameLocation extends Location {
 		}
 		return world;
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null || !(obj instanceof Location))
+			return false;
+		final Location other = (Location) obj;
+
+		final World world = this.getWorld();
+		final World otherWorld = other.getWorld();
+		if (world == null && otherWorld == null) {
+			// check names
+			if (other instanceof WorldNameLocation) {
+				final String otherWorldName = ((WorldNameLocation) other).getWorldName();
+				if (worldName != otherWorldName && (worldName == null || !worldName.equalsIgnoreCase(otherWorldName)))
+					return false;
+			} else if (worldName != null && worldName.length() > 0)
+				return false;
+		} else if (world != otherWorld && (world == null || !world.equals(otherWorld)))
+			return false;
+
+		if (Double.doubleToLongBits(this.getX()) != Double.doubleToLongBits(other.getX()))
+			return false;
+		if (Double.doubleToLongBits(this.getY()) != Double.doubleToLongBits(other.getY()))
+			return false;
+		if (Double.doubleToLongBits(this.getZ()) != Double.doubleToLongBits(other.getZ()))
+			return false;
+		if (Float.floatToIntBits(this.getPitch()) != Float.floatToIntBits(other.getPitch()))
+			return false;
+		if (Float.floatToIntBits(this.getYaw()) != Float.floatToIntBits(other.getYaw()))
+			return false;
+		return true;
+	}
 }

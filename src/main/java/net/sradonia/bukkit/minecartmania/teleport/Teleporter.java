@@ -2,6 +2,14 @@ package net.sradonia.bukkit.minecartmania.teleport;
 
 import org.bukkit.Location;
 
+/**
+ * This class represents a pair of {@link WorldNameLocation}s representing a
+ * teleporter.
+ * 
+ * Warning: The crappy <code>a != null && a.equals(b)</code> statements all over
+ * this file are by intention as we have to work around Bukkit's faulty
+ * {@link Location#equals(Object)} method.
+ */
 public class Teleporter {
 
 	private String name;
@@ -31,9 +39,9 @@ public class Teleporter {
 	}
 
 	public WorldNameLocation getOther(Location location) {
-		if (location.equals(first))
+		if (first != null && first.equals(location))
 			return second;
-		else if (location.equals(second))
+		else if (second != null && second.equals(location))
 			return first;
 		else
 			throw new IllegalArgumentException("This location is not part of this teleporter!");
@@ -49,10 +57,10 @@ public class Teleporter {
 	}
 
 	public boolean remove(Location location) {
-		if (location.equals(first)) {
+		if (first != null && first.equals(location)) {
 			first = null;
 			return true;
-		} else if (location.equals(second)) {
+		} else if (second != null && second.equals(location)) {
 			second = null;
 			return true;
 		} else
@@ -68,6 +76,6 @@ public class Teleporter {
 	}
 
 	public boolean contains(Location location) {
-		return location.equals(first) || location.equals(second);
+		return (first != null && first.equals(location)) || (second != null && second.equals(location));
 	}
 }
