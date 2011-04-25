@@ -4,7 +4,7 @@
 
 	<groupId>net.sradonia.bukkit</groupId>
 	<artifactId>MinecartManiaTeleport</artifactId>
-	<version>1.2.0</version>
+	<version>1.2.1</version>
 	<name>MinecartManiaTeleport</name>
 
 	<scm>
@@ -29,7 +29,7 @@
 		<dependency>
 			<groupId>com.afforess</groupId>
 			<artifactId>MinecartManiaCore</artifactId>
-			<version>1.10_beta2</version>
+			<version>1.1.0</version>
 		</dependency>
 		<!-- You have to install a Permissions compatible jar file with: mvn install:install-file 
 			-Dfile=Permissions.jar -DgroupId=com.nijiko.permissions -DartifactId=Permissions 
