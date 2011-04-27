@@ -4,7 +4,7 @@
 
 	<groupId>net.sradonia.bukkit</groupId>
 	<artifactId>MinecartManiaTeleport</artifactId>
-	<version>1.2.1</version>
+	<version>1.2.2</version>
 	<name>MinecartManiaTeleport</name>
 
 	<scm>
