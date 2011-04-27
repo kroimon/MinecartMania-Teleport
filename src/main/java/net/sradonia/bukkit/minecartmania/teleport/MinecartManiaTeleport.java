@@ -60,12 +60,12 @@ public class MinecartManiaTeleport extends JavaPlugin {
 		final ServerListener serverListener = new ServerListener() {
 			@Override
 			public void onPluginEnable(PluginEnableEvent event) {
-				if (event.getPlugin() instanceof Permissions)
+				if (event.getPlugin().getDescription().getName().equals("Permissions"))
 					setPermissionsPlugin((Permissions) event.getPlugin());
 			}
 			@Override
 			public void onPluginDisable(PluginDisableEvent event) {
-				if (event.getPlugin() instanceof Permissions)
+				if (event.getPlugin().getDescription().getName().equals("Permissions"))
 					setPermissionsPlugin(null);
 			}
 		};
