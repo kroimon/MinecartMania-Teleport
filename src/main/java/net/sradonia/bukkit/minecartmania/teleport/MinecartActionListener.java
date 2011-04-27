@@ -12,6 +12,7 @@ import org.bukkit.util.Vector;
 import com.afforess.minecartmaniacore.MinecartManiaMinecart;
 import com.afforess.minecartmaniacore.event.MinecartActionEvent;
 import com.afforess.minecartmaniacore.event.MinecartManiaListener;
+import com.afforess.minecartmaniacore.utils.MinecartUtils;
 
 public class MinecartActionListener extends MinecartManiaListener {
 	private final MinecartManiaTeleport plugin;
@@ -121,16 +122,16 @@ public class MinecartActionListener extends MinecartManiaListener {
 
 		Block block;
 		block = centerBlock.getRelative(BlockFace.NORTH);
-		if (block.getType().equals(Material.RAILS))
+		if (MinecartUtils.isTrack(block))
 			return block.getLocation();
 		block = centerBlock.getRelative(BlockFace.SOUTH);
-		if (block.getType().equals(Material.RAILS))
+		if (MinecartUtils.isTrack(block))
 			return block.getLocation();
 		block = centerBlock.getRelative(BlockFace.EAST);
-		if (block.getType().equals(Material.RAILS))
+		if (MinecartUtils.isTrack(block))
 			return block.getLocation();
 		block = centerBlock.getRelative(BlockFace.WEST);
-		if (block.getType().equals(Material.RAILS))
+		if (MinecartUtils.isTrack(block))
 			return block.getLocation();
 
 		return null;
