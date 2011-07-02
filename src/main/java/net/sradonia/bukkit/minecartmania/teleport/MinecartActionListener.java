@@ -77,44 +77,20 @@ public class MinecartActionListener extends MinecartManiaListener {
 			return;
 		}
 
-		final Minecart cart = minecart.minecart;
-
 		// check it's speed and calculate new velocity
+		final Minecart cart = minecart.minecart;
 		double speed = cart.getVelocity().length();
-		final Vector newVelocity;
 		if (targetLocation.getX() > trackLocation.getX())
-			newVelocity = new Vector(-speed, 0, 0);
+			cart.setVelocity(new Vector(-speed, 0, 0));
 		else if (targetLocation.getX() < trackLocation.getX())
-			newVelocity = new Vector(speed, 0, 0);
+			cart.setVelocity(new Vector(speed, 0, 0));
 		else if (targetLocation.getZ() > trackLocation.getZ())
-			newVelocity = new Vector(0, 0, -speed);
+			cart.setVelocity(new Vector(0, 0, -speed));
 		else if (targetLocation.getZ() < trackLocation.getZ())
-			newVelocity = new Vector(0, 0, speed);
-		else // something went wrong?
-			newVelocity = cart.getVelocity();
+			cart.setVelocity(new Vector(0, 0, speed));
 
 		// teleport minecart...
-		final Entity passenger = cart.getPassenger();
-		if (passenger == null) {
-			// empty minecart, just teleport it the simple way
-			if (cart.teleport(trackLocation))
-				cart.setVelocity(newVelocity);
-		} else {
-			// we have a passenger, do some hacky stuff - idea thanks to 'Wormhole X-Treme'
-			cart.eject();
-
-			final Minecart newCart = trackLocation.getWorld().spawnMinecart(trackLocation);
-			minecart.copy(newCart);
-			minecart.kill(false);
-
-			passenger.teleport(targetLocation);
-			newCart.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-				public void run() {
-					newCart.setPassenger(passenger);
-					newCart.setVelocity(newVelocity);
-				}
-			}, 5);
-		}
+		minecart.teleport(trackLocation);
 	}
 
 	public static Location findTrackAround(Location center) {
